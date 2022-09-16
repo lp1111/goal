@@ -16,8 +16,9 @@ def highlight_row(row):
         return [highlight2, default]
 
 
-def pivot_table(file, time):
-    inc = pd.read_csv(file)
+def pivot_table(file1, file2, time):
+    inc = pd.read_csv(file1)
+    csat = pd.read_csv(file2)
     sla_p1 = 3
     sla_p2 = 8
     sla_p3_p4 = 36
@@ -57,7 +58,13 @@ def pivot_table(file, time):
     aging_df = pd.pivot_table(sla_df, values="Closed", index="Priority", columns="Aging_met", aggfunc="count",
                               margins=True)
     aging_df = aging_df.div(aging_df.iloc[:, -1], axis=0).mul(100).round(2).fillna(0)
-
+    csat["u_assessment_completed"] = pd.to_datetime(csat["u_assessment_completed"], format='%Y-%m-%d')
+    csat["u_assessment_completed"] = csat["u_assessment_completed"].dt.date
+    csat = csat.loc[(csat["u_assessment_completed"] >= slide)]
+    csat_pivot = pd.pivot_table(csat, values="u_assessment_completed", index=None, columns="u_dsat", aggfunc="count",
+                                margins=True,
+                                dropna=True)
+    print(csat_pivot)
     try:
 
         sla_p1 = sla_pivot["Yes"]["Priority 1"]
@@ -79,8 +86,10 @@ def pivot_table(file, time):
     except KeyError:
         sla_p3_p4 = 0
 
-    final = {"Priority": ["SLA Priority 1", "SLA Priority 2", "SLA Priority 3 and 4", "Incident Aging"],
-             '%': [sla_p1, sla_p2, sla_p3_p4, aging_df["All"]["All"]], "Target %": [90, 85, 75, 95]}
+    #final = {"Priority": ["SLA Priority 1", "SLA Priority 2", "SLA Priority 3 and 4", "Incident Aging"],
+     #        '%': [sla_p1, sla_p2, sla_p3_p4, aging_df["All"]["All"]], "Target %": [90, 85, 75, 95]}
+
+    final = {'%': [sla_p1, sla_p2, sla_p3_p4, aging_df["All"]["All"]], "Target %": [90, 85, 75, 95]}
     final = pd.DataFrame(data=final,
                          index=["SLA Priority 1", "SLA Priority 2", "SLA Priority 3 and 4", "Incident Aging"])
 
@@ -115,5 +124,5 @@ if uploaded_file:
         )
 
         submit_button = st.form_submit_button(label="Refresh")
-        #st.markdown("### Data preview")
-        st.dataframe(pivot_table(uploaded_file, ab))
+        # st.markdown("### Data preview")
+        st.dataframe(pivot_table(uploaded_file, uploaded_file2, ab))
