@@ -58,13 +58,13 @@ def pivot_table(file1, file2, time):
     aging_df = pd.pivot_table(sla_df, values="Closed", index="Priority", columns="Aging_met", aggfunc="count",
                               margins=True)
     aging_df = aging_df.div(aging_df.iloc[:, -1], axis=0).mul(100).round(2).fillna(0)
-    csat["u_assessment_completed"] = pd.to_datetime(csat["u_assessment_completed"], format='%Y-%m-%d')
-    csat["u_assessment_completed"] = csat["u_assessment_completed"].dt.date
-    csat = csat.loc[(csat["u_assessment_completed"] >= slide)]
-    csat_pivot = pd.pivot_table(csat, values="u_assessment_completed", index=None, columns="u_dsat", aggfunc="count",
+    #csat["u_assessment_completed"] = pd.to_datetime(csat["u_assessment_completed"], format='%Y-%m-%d')
+    #csat["u_assessment_completed"] = csat["u_assessment_completed"].dt.date
+    #csat = csat.loc[(csat["u_assessment_completed"] >= slide)]
+    #csat_pivot = pd.pivot_table(csat, values="u_assessment_completed", index=None, columns="u_dsat", aggfunc="count",
                                 margins=True,
                                 dropna=True)
-    print(csat_pivot)
+    
     try:
 
         sla_p1 = sla_pivot["Yes"]["Priority 1"]
