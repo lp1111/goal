@@ -61,9 +61,8 @@ def pivot_table(file1, file2, time):
     #csat["u_assessment_completed"] = pd.to_datetime(csat["u_assessment_completed"], format='%Y-%m-%d')
     #csat["u_assessment_completed"] = csat["u_assessment_completed"].dt.date
     #csat = csat.loc[(csat["u_assessment_completed"] >= slide)]
-    #csat_pivot = pd.pivot_table(csat, values="u_assessment_completed", index=None, columns="u_dsat", aggfunc="count",
-                                margins=True,
-                                dropna=True)
+    #csat_pivot = pd.pivot_table(csat, values="u_assessment_completed", index=None, columns="u_dsat", aggfunc="count", margins=True, dropna=True)
+                                
     
     try:
 
